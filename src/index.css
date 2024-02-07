@@ -1,0 +1,6 @@
+@tailwind base;
+@tailwind components;
+.input {@apply w-full rounded-md focus:ring border-2 border-sky-400 pl-2}
+
+
+@tailwind utilities;
