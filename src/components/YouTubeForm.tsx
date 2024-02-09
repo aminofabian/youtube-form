@@ -7,11 +7,38 @@ type FormData = {
   username: string;
   email: string;  
   channel: string;
+  social: {
+    twitter: string;
+    facebook: string;
+  },
+  phoneNumber: string[];
 };
 
 
 function YouTubeForm() {
-  const form = useForm<FormData>();
+  const form = useForm<FormData>({
+    defaultValues: {
+      username: "batman",
+      email: "addd@gmail.com",
+      channel: "",
+      social: {
+        twitter: "",
+        facebook: "",
+      },
+      phoneNumber: ["", ""],
+    }
+    
+    //To Return Default form Values from an API end Point
+    // defaultValues: async () => {
+    //   const response = await fetch("https://jsonplaceholder.typicode.com/users/1");
+    //   const data = await response.json()
+    //   return {
+    //     username: "Batman",
+    //     email: data.email,
+    //     channel: "",
+    //   }
+    // }
+  });
   
   const { register, control, handleSubmit, formState } = form;
   const {errors} = formState;
@@ -84,16 +111,49 @@ function YouTubeForm() {
       
       </span>
       
-      <button className='text-white bg-blue-400 mx-auto px-3 py-1 mt-3 rounded-md hover:bg-sky-500'>Submit</button>
-      </form>
-      <div>
-      </div>
+      <span>
+      <label htmlFor="twitter" className="font-bold"> twitter:</label>
+      <input className="input" type='text' id='twitter' {...register("social.twitter")} />
+      </span>
       
-      <DevTool control={control} />
-      </div>
-      )
-    }
-    
-    export default YouTubeForm
-    
-    
+      <span>
+      <label htmlFor="facebook" className="font-bold"> Facebook:</label>
+      <input className="input" type='text' id='facebook' {...register("social.facebook")} />
+      </span>
+      
+      <span>
+      <label htmlFor="phoneNumber" className="font-bold"> Phone Number 1:</label>
+      <input className="input" type='text' id='phoneNumber' {...register("phoneNumber.0", {
+        required:
+        {
+          value: true,
+          message: 'phone number is required'}
+        })} />  
+        <p className="error">{errors.phoneNumber?.[0]?.message}</p>        
+        </span>
+        
+        <span>
+        <label htmlFor="phoneNumber" className="font-bold"> Phone Number 2:</label>
+        <input className="input" type='text' id='phoneNumber' {...register("phoneNumber.1", {
+          required:
+          {
+            value: true,
+            message: 'phone number is required'}
+          })} />
+          <p className="error">{errors.phoneNumber?.[1]?.message}</p>        
+          
+          </span>
+          
+          <button className='text-white bg-blue-400 mx-auto px-3 py-1 mt-3 rounded-md hover:bg-sky-500'>Submit</button>
+          </form>
+          <div>
+          </div>
+          
+          <DevTool control={control} />
+          </div>
+          )
+        }
+        
+        export default YouTubeForm
+        
+        
