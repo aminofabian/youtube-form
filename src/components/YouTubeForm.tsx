@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+
 import { DevTool } from "@hookform/devtools";
 
 let renderCount = 0;
@@ -11,13 +12,16 @@ type FormData = {
 
 function YouTubeForm() {
   const form = useForm<FormData>();
-  const { register, control, handleSubmit } = form;
+  
+  const { register, control, handleSubmit, formState } = form;
+  const {errors} = formState;
+  
+  
   
   const onSubmit = (data: FormData) => {
-    data.username = data.username.trim();
-    data.email = data.email.trim(); 
-    data.channel = data.channel.trim();
+    console.log(data);
   }
+  
   
   renderCount++;
   
@@ -31,31 +35,65 @@ function YouTubeForm() {
     <form className='flex flex-col md:w-[30%] border-[1px] py-10 px-5 rounded-md space-y-7' onSubmit={handleSubmit(onSubmit)} noValidate>
     <span>
     <label htmlFor="username" className="font-bold"> Username:</label>
-    <input className="input" type='text' id='username' {...register("username", {required: 'username is required'})} />
+    <input className="input" type='text' id='username' {...register("username", {
+      required:
+      {
+        value: true,
+        message: 'username is required',
+      }
+    })} />
+    <p className="error">{errors.username?.message}</p>
     </span>
     
     <span> <label htmlFor="username" className="font-bold"> Email:</label>
     <input className="input" type='email' id='email' {...register("email", {
+      required: {
+        value: true,
+        message: "email is required",
+      },
       pattern: {
         value:
         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
         message: "Invalid email format",
       },
+      validate: {
+        notAdmin: (fieldValue) => {
+          return (fieldValue !== "admin@example.com" ||
+          "enter a different email address, admin is not allowed"
+          );
+        },
+        notBlacklisted: (fieldValue) => {
+          return (!fieldValue.endsWith("gmail.com") || "gmail is not allowed. We only accept official email addresses"
+          );
+        }
+      }
     })} /> 
+    <p className="error">{errors.email?.message}</p>
+    
     </span>
     
     <span>
     <label htmlFor="username" className="font-bold"> Channel:</label>
-    <input className="input" type='channel' id='channel' {...register("channel", {required: 'channel is required'})}/>
-    </span>
+    <input className="input" type='channel' id='channel' {...register("channel", {
+      required:
+      {
+        value: true,
+        message:'channel is required'}
+      })} />
+      <p className="error">{errors.channel?.message}</p>
+      
+      </span>
+      
+      <button className='text-white bg-blue-400 mx-auto px-3 py-1 mt-3 rounded-md hover:bg-sky-500'>Submit</button>
+      </form>
+      <div>
+      </div>
+      
+      <DevTool control={control} />
+      </div>
+      )
+    }
     
-    <button className='text-white bg-blue-400 mx-auto px-3 py-1 mt-3 rounded-md hover:bg-sky-500'>Submit</button>
-    </form>
-    <DevTool control={control} />
-    </div>
-    )
-  }
-  
-  export default YouTubeForm
-  
-  
+    export default YouTubeForm
+    
+    
